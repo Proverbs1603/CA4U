@@ -24,12 +24,18 @@ public class CategoryController {
     })
     @GetMapping("/{fstCategoryId}/second-categories")
     public ApiResponse<List<CategoryDto>> getSecondCategories(@PathVariable Long fstCategoryId) {
-        return ApiResponse.ok(categoryService.getSecondCategories(fstCategoryId));
+        return ApiResponse.ok(categoryService.getSecondCategories(fstCategoryId), "대분류에 따른 중분류 목록 조회 성공");
     }
 
     @Operation(summary = "대분류 목록 조회", description = "대분류 목록 조회 API")
     @GetMapping("/first-categories")
     public ApiResponse<List<CategoryDto>> getFirstCategories() {
-        return ApiResponse.ok(categoryService.getFirstCategories());
+        return ApiResponse.ok(categoryService.getFirstCategories(), "대분류 목록 조회 성공");
+    }
+
+    @Operation(summary = "필터링 목록 조회", description = "필터링 목록 한방 조회 API")
+    @GetMapping("/filters")
+    public ApiResponse<List<CategoryFilterResponseDto>> getFilters() {
+        return ApiResponse.ok(categoryService.getAllFiltersCategory(), "필터링 전체 목록 조회 성공");
     }
 }
