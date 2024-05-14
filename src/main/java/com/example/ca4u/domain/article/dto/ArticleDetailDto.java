@@ -42,4 +42,7 @@ public class ArticleDetailDto {
                 .build();
     }
 
+    public void setHashtagDtoList(List<HashtagDto> hashtagDtoList) {
+        this.hashtagDtoList = hashtagDtoList;
+    }
 }
