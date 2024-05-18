@@ -3,6 +3,7 @@ package com.example.ca4u.domain.article;
 import com.example.ca4u.apiResponse.ApiResponse;
 import com.example.ca4u.domain.article.dto.ArticleDetailDto;
 import com.example.ca4u.domain.article.dto.ArticleDto;
+import com.example.ca4u.domain.article.dto.ArticleFilterRequestDto;
 import com.example.ca4u.domain.article.dto.ArticleLikeDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -71,5 +72,13 @@ public class ArticleController {
         //우선은
         return ApiResponse.ok(articleService.getPersonalArticle(articleIds), "개인맞춤형 동아리/학회 조회 성공");
     }
+
+//    @Operation(summary = "필터링 옵션 선택 후 학회/동아리 조회 API", description = "여러 필터링을 선택한 후 학회/동아리를 조회하는 API", parameters = {
+//            @Parameter(name = "filterOptions", description = "관심분과(List), 활동요일(List), 활동시간(List), 회비(Integer), 지원방법(List) 등")
+//    })
+//    @GetMapping("/articles/filters")
+//    public ApiResponse<List<ArticleDto>> getFilteringArticles(@ResponseBody ArticleFilterRequestDto articleFilterRequestDto){
+//
+//    }
 
 }

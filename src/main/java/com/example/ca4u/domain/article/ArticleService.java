@@ -18,8 +18,8 @@ import java.util.List;
 @Transactional(readOnly = true)
 @Service
 public class ArticleService {
-    private ArticleRepository articleRepository;
-    private ArticleHashtagRepository articleHashtagRepository;
+    private final ArticleRepository articleRepository;
+    private final ArticleHashtagRepository articleHashtagRepository;
     @Transactional
     public void likeArticle(Long articleId) {
         //좋아요 +1
@@ -70,7 +70,7 @@ public class ArticleService {
 
     public ArticleDetailDto getArticlesDetails(Long articleId){
         //게시글 안에 해쉬태그들 불러오기
-       List<HashtagDto> hashtagDtoList = articleHashtagRepository.findByArticleId(articleId);
+       List<HashtagDto> hashtagDtoList = articleHashtagRepository.findByArticleId(articleId).stream().map(HashtagDto::of).toList();
        //게시글 정보 불러오기
        ArticleDetailDto articleDetailDto = ArticleDetailDto.of(articleRepository.findById(articleId).orElseThrow(() -> new EntityNotFoundException("해당 게시글이 없습니다. id=" + articleId)));
        //게시글 detail Dto에 해쉬태그 정보 넣어주기
