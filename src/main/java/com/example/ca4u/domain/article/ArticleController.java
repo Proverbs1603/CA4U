@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Tag(name = "게시글", description = "게시글 즐겨찾기 API")
@@ -73,12 +74,19 @@ public class ArticleController {
         return ApiResponse.ok(articleService.getPersonalArticle(articleIds), "개인맞춤형 동아리/학회 조회 성공");
     }
 
-//    @Operation(summary = "필터링 옵션 선택 후 학회/동아리 조회 API", description = "여러 필터링을 선택한 후 학회/동아리를 조회하는 API", parameters = {
-//            @Parameter(name = "filterOptions", description = "관심분과(List), 활동요일(List), 활동시간(List), 회비(Integer), 지원방법(List) 등")
-//    })
-//    @GetMapping("/articles/filters")
-//    public ApiResponse<List<ArticleDto>> getFilteringArticles(@ResponseBody ArticleFilterRequestDto articleFilterRequestDto){
-//
-//    }
+    @Operation(summary = "홈 화면에 새로운 학회/동아리 조회 API", description = "홈 화면에 새로운 학회/동아리 조회 API")
+    @GetMapping("/articles/new")
+    public ApiResponse<List<ArticleDto>> getNewArticle(){
+        //우선은
+        return ApiResponse.ok(articleService.getNewArticles(), "홈 화면 새로운 동아리/학회 조회 성공");
+    }
+
+    @Operation(summary = "필터링 옵션 선택 후 학회/동아리 조회 API", description = "여러 필터링을 선택한 후 학회/동아리를 조회하는 API", parameters = {
+            @Parameter(name = "filterOptions", description = "관심분과(List), 활동요일(List), 활동시간(List), 회비(Integer), 지원방법(List) 등")
+    })
+    @PostMapping("/articles/filters")
+    public ApiResponse<List<ArticleDto>> getFilteringArticles(@RequestBody ArticleFilterRequestDto articleFilterRequestDto){
+        return ApiResponse.ok(articleService.getFilteringArticles(articleFilterRequestDto), "필터링 조회 성공");
+    }
 
 }

@@ -2,6 +2,7 @@ package com.example.ca4u.domain.article;
 
 import com.example.ca4u.domain.article.dto.ArticleDetailDto;
 import com.example.ca4u.domain.article.dto.ArticleDto;
+import com.example.ca4u.domain.article.dto.ArticleFilterRequestDto;
 import com.example.ca4u.domain.article.dto.ArticleLikeDto;
 import com.example.ca4u.domain.articleHashtag.ArticleHashtagRepository;
 import com.example.ca4u.domain.hashtag.Hashtag;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -78,19 +81,102 @@ public class ArticleService {
        return articleDetailDto;
     }
 
-    public List<ArticleDto> getArticlesByHashtags(Long hashtagId){
-        return articleHashtagRepository.findArticlesByHashtagId(hashtagId).stream().map(ArticleDto::of).toList();
+    public List<ArticleDto> getArticlesByHashtags(Long hashtagId) {
+        List<Long> ids = new ArrayList<>();
+
+        if (hashtagId == 303) { // 날파람(26) - 대회(303)
+            ids = Arrays.asList(30L, 29L, 68L, 69L, 32L, 56L, 28L, 88L, 71L, 76L, 27L, 55L, 75L, 74L, 10L, 5L, 25L);
+        } else if (hashtagId == 309) { // 날파람(26) - 박람회(309)
+            ids = Arrays.asList(49L, 55L, 74L);
+        } else if (hashtagId == 308) { // 날파람(26) - 부스
+            ids = Arrays.asList(29L, 49L, 33L, 62L);
+        } else if (hashtagId == 306) { // 날파람(26) - 선수
+            ids = Arrays.asList(30L, 72L, 70L, 71L);
+        } else if (hashtagId == 305) { // 날파람(26) - 심사
+            ids = Arrays.asList(15L);
+        } else if (hashtagId == 301) { // 날파람(26) - 운동
+            ids = Arrays.asList(30L, 29L, 85L, 76L);
+        } else if (hashtagId == 236) { // 인액터스 - 개발
+            ids = Arrays.asList(12L, 3L, 60L, 61L, 9L);
+        } else if (hashtagId == 234) { // 인액터스 - 경험
+            ids = Arrays.asList(12L, 62L);
+        } else if (hashtagId == 235) { // 인액터스 - 교류
+            ids = Arrays.asList(68L, 29L, 55L, 32L, 76L, 69L, 28L, 70L, 62L);
+        } else if (hashtagId == 233) { // 인액터스 - 기업
+            ids = Arrays.asList(13L, 8L, 21L, 10L);
+        } else if (hashtagId == 238) { // 인액터스 - 발표
+            ids = Arrays.asList(8L, 3L, 23L, 11L, 17L, 46L, 4L);
+        } else if (hashtagId == 231) { // 인액터스 - 프로젝트
+            ids = Arrays.asList(13L, 12L, 7L, 60L, 14L, 59L, 61L);
+        } else {
+            return new ArrayList<>();
+        }
+
+        return articleRepository.findAllById(ids).stream()
+                .map(ArticleDto::of)
+                .toList();
     }
 
     public List<ArticleDto> getPersonalArticle(String articleIds){
         //articleIds에 따라서 쿼리를 다르게 가져가기 (쿼리 한 3개 생성하면 되지 않을까)
-        if(articleIds.equals("123")){
+        if(articleIds.equals("2632497")){
             return articleRepository.findPersonalArticles_1().stream().map(ArticleDto::of).toList();
-        } else if (articleIds.equals("456")) {
+        } else if (articleIds.equals("263249713")) {
             return articleRepository.findPersonalArticles_2().stream().map(ArticleDto::of).toList();
-        } else if (articleIds.equals("789")) {
-            return articleRepository.findPersonalArticles_3().stream().map(ArticleDto::of).toList();
         }
-        return articleRepository.findPersonalArticles_1().stream().map(ArticleDto::of).toList();
+        return new ArrayList<ArticleDto>();
+    }
+
+    public List<ArticleDto> getNewArticles(){
+        return articleRepository.findNewArticles().stream().map(ArticleDto::of).toList();
+    }
+
+    public List<ArticleDto> getFilteringArticles(ArticleFilterRequestDto articleFilterRequestDto){
+        List<Article> articles = articleRepository.findAll();
+
+        // 관심분과 필터링
+        List<String> departmentList = articleFilterRequestDto.getDepartmentList();
+        if (departmentList != null && !departmentList.isEmpty()) {
+            articles = articles.stream()
+                    .filter(article -> departmentList.contains(article.getDepartment()))
+                    .toList();
+        }
+
+        // 활동요일 필터링
+        List<String> actDayList = articleFilterRequestDto.getActDayList();
+        if (actDayList != null && !actDayList.isEmpty()) {
+            articles = articles.stream()
+                    .filter(article -> actDayList.contains(article.getActDay()))
+                    .toList();
+        }
+
+        // 활동시간 필터링
+        List<String> actHourList = articleFilterRequestDto.getActHourList();
+        if (actHourList != null && !actHourList.isEmpty()) {
+            articles = articles.stream()
+                    .filter(article -> actHourList.contains(article.getActHour()))
+                    .toList();
+        }
+
+        // 회비 필터링
+        Integer cost = articleFilterRequestDto.getCost();
+        if (cost != null) {
+            articles = articles.stream()
+                    .filter(article -> article.getCost() <= cost)
+                    .toList();
+        }
+
+//        // 지원방법 필터링
+//        List<String> applyFormList = articleFilterRequestDto.getApplyFormList();
+//        if (applyFormList != null && !applyFormList.isEmpty()) {
+//            articles = articles.stream()
+//                    .filter(article -> applyFormList.contains(article.getApplyForm()))
+//                    .toList();
+//        }
+
+        // Article을 ArticleDto로 매핑하여 반환
+        return articles.stream()
+                .map(ArticleDto::of)
+                .toList();
     }
 }
