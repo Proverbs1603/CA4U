@@ -12,10 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -112,19 +110,37 @@ public class ArticleService {
             return new ArrayList<>();
         }
 
-        return articleRepository.findAllById(ids).stream()
+
+        List<Article> articles = articleRepository.findAllById(ids);
+        Map<Long, Article> articleMap = articles.stream()
+                .collect(Collectors.toMap(Article::getId, article -> article));
+
+        return ids.stream()
+                .map(articleMap::get)
                 .map(ArticleDto::of)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public List<ArticleDto> getPersonalArticle(String articleIds){
+        List<Long> ids = new ArrayList<>();
+
         //articleIds에 따라서 쿼리를 다르게 가져가기 (쿼리 한 3개 생성하면 되지 않을까)
         if(articleIds.equals("2632497")){
-            return articleRepository.findPersonalArticles_1().stream().map(ArticleDto::of).toList();
+            ids = Arrays.asList(29L, 30L, 72L, 13L);
         } else if (articleIds.equals("263249713")) {
-            return articleRepository.findPersonalArticles_2().stream().map(ArticleDto::of).toList();
+            ids = Arrays.asList(29L, 21L, 30L, 72L);
+        }else{
+            return new ArrayList<ArticleDto>();
         }
-        return new ArrayList<ArticleDto>();
+
+        List<Article> articles = articleRepository.findAllById(ids);
+        Map<Long, Article> articleMap = articles.stream()
+                .collect(Collectors.toMap(Article::getId, article -> article));
+
+        return ids.stream()
+                .map(articleMap::get)
+                .map(ArticleDto::of)
+                .collect(Collectors.toList());
     }
 
     public List<ArticleDto> getNewArticles(){

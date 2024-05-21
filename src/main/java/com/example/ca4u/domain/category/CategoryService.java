@@ -58,9 +58,10 @@ public class CategoryService {
             //카테고리 대분류ID에 따른 중분류 불러오기
             List<CategoryDto> secCategoryList = categoryRepository.findAllSecCategoryByFstId(categoryDto.getId()).stream().map(CategoryDto::of).toList();
 
-            if(type != null && type.equals("C") && categoryNm.equals("관심분과")){
-                secCategoryList = secCategoryList.stream().filter(s -> !s.getCategoryNm().equals("학술탐구분과")).toList();
-            }
+            //동아리에 학술탐구분과 추가된 게 있어서 요건 주석
+//            if(type != null && type.equals("C") && categoryNm.equals("관심분과")){
+//                secCategoryList = secCategoryList.stream().filter(s -> !s.getCategoryNm().equals("학술탐구분과")).toList();
+//            }
 
             //카테고리 중분류 집어넣기 (List<CategoryDto>형)
             categoryFilterResponseDto.setSecCategoryFilter(secCategoryList);
