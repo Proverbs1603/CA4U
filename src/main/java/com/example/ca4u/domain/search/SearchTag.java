@@ -1,4 +1,4 @@
-package com.example.ca4u.domain.hashtag;
+package com.example.ca4u.domain.search;
 
 import com.example.ca4u.domain.base.BaseEntity;
 import jakarta.persistence.*;
@@ -6,11 +6,10 @@ import lombok.Getter;
 
 @Getter
 @Entity
-public class Hashtag extends BaseEntity {
+public class SearchTag extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "hashtag_id")
+    @Column(name = "search_tag_id")
     private Long id;
 
-    @Column(name = "tag", nullable = false)
-    private String tag;
+    private String tagNm;
 }

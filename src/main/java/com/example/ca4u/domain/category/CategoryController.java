@@ -29,12 +29,4 @@ public class CategoryController {
     public ApiResponse<List<CategoryDto>> getFirstCategories() {
         return ApiResponse.ok(categoryService.getFirstCategories(), "대분류 목록 조회 성공");
     }
-
-    @Operation(summary = "필터링 목록 조회", description = "필터링 목록 한방 조회 API", parameters = {
-            @Parameter(name = "type", description = "동아리(C) 또는 학회(A)", in = ParameterIn.QUERY, required = false)
-    })
-    @GetMapping("/filters")
-    public ApiResponse<List<CategoryFilterResponseDto>> getFilters(@RequestParam(name = "type", required = false) String type) {
-        return ApiResponse.ok(categoryService.getAllFiltersCategory(type), "필터링 전체 목록 조회 성공");
-    }
 }
